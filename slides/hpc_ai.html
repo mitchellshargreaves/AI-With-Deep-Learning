@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Chris Hines" />
+  <meta name="date" content="2020-12-07" />
+  <title>HPC for AI/ML</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="https://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <script src="https://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">HPC for AI/ML</h1>
+  <p class="author">
+Chris Hines
+  </p>
+  <p class="date">20201207</p>
+</div>
+<div id="hello" class="slide section level2">
+<h1>Hello</h1>
+<p>This is an ML specific digest of</p>
+<p>https://docs.massive.org.au</p>
+<p>help@massive.org.au</p>
+</div>
+<div id="whats-a-clusterhpc" class="slide section level2">
+<h1>Whats a Cluster/HPC?</h1>
+<p>Most modern HPC are Clusters.</p>
+<ul>
+<li>Group of computers</li>
+<li>NOT one fast computer</li>
+</ul>
+<p>many tasks NOT one fast task</p>
+<p>Most AI tasks decompose BUT you have to do the work</p>
+</div>
+<div id="other-bits-about-a-cluster" class="slide section level2">
+<h1>Other bits about a Cluster</h1>
+<p>Usually:</p>
+<ul>
+<li>Shared filesystem (you don’t need to copy you files between nodes)</li>
+<li>Shared Money (pool resources to buy more nodes, but you have to share them)</li>
+<li>Scheduler (takes care of making sure everyone gets a turn)</li>
+</ul>
+</div>
+<div id="schedulers-bane-or-salvation" class="slide section level2">
+<h1>Schedulers: Bane or Salvation?</h1>
+<p>Ask for what you want.</p>
+<p>You will get it WHEN its available.</p>
+<p>Pro: Don’t run out of RAM due to another user</p>
+<p>Con: If you run over your job will die</p>
+<p>Pro: Exclusive CPU, code should take the same time</p>
+<p>Con: If you run over your job will die</p>
+<p>Pro: If you’re not using it, someone else is</p>
+<ul>
+<li>better economics</li>
+<li>bigger cluster</li>
+<li>faster research</li>
+</ul>
+</div>
+<div id="accessing-the-cluster" class="slide section level2">
+<h1>Accessing the cluster</h1>
+<ul>
+<li>Terminal/Command line</li>
+<li>VNC Server (aka Remote Desktop)</li>
+<li>Jupyter Lab</li>
+</ul>
+</div>
+<div id="exercise" class="slide section level2">
+<h1>Exercise</h1>
+<p>Open <a href="https://training.cloud.cvl.org.au">https://training.cloud.cvl.org.au</a></p>
+<ul>
+<li>Select Login in -&gt; Training</li>
+<li>Login with AAF or Google</li>
+<li>Select Terminal</li>
+<li>Click Run on Login Node</li>
+</ul>
+</div>
+<div id="requesting-resources" class="slide section level2">
+<h1>Requesting Resources</h1>
+<ul>
+<li>Slurm for scheduling</li>
+<li>scripts have a series #SBATCH “comments” at the begining</li>
+<li>The comments tell slurm what resources we want</li>
+</ul>
+</div>
+<div id="exercise-1" class="slide section level2">
+<h1>Exercise</h1>
+<p>Run the following commands in the terminal</p>
+<pre><code>git clone https://github.com/mitchellshargreaves/AI-With-Deep-Learning.git
+cd AI-With-Deep-Learning
+cat myfirstjob.cvluwa.slurm
+sbatch myfirstjob.cvluwa.slurm
+squeue -u $USER
+sacct -j &lt;jobid&gt;
+sacct -l -j &lt;jobid&gt;
+sacct --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,CPUTime -j  &lt;jobid&gt;</code></pre>
+<p>The job should run extremly quickly</p>
+<p>The <code>sacct</code> commands really only make sense after the job is completed</p>
+</div>
+<div class="slide section level2">
+
+<div>
+<div class="left" style="float:left;width:48%">
+<h3 id="resources-on-m3">Resources on M3</h3>
+<pre><code>#SBATCH --job-name=pytorch 
+#SBATCH --account=vf68 
+#SBATCH --nodes=1 
+#SBATCH --ntasks=6 
+#SBATCH --cpus-per-task=1 
+#SBATCH --gres=gpu:P4:1 
+#SBATCH --mem=55G 
+#SBATCH --partition=desktop
+#SBATCH --qos=desktopq</code></pre>
+</div>
+<div class="right" style="float:right;width:48%">
+<h3 id="resources-on-cvluwa">Resources on CVL@UWA</h3>
+<pre><code>#SBATCH --job-name=pytorch
+#SBATCH --account=vf68
+#SBATCH --nodes=1
+#SBATCH --ntasks=6
+#SBATCH --cpus-per-task=1
+
+#SBATCH --mem=40G
+#SBATCH --partition=desktop
+
+</code></pre>
+</div>
+</div>
+<p>Different clusters specify their resources in slightly different ways.</p>
+<p>M3 has multiple varietys of GPU and you need to request exactly what you want</p>
+<p>CVL@UWA is used primarily for Remote Desktop (i.e. vis programs) so the GPUs are managed differently</p>
+<p>CVL@UWA has less RAM</p>
+</div>
+<div id="software-on-a-cluster" class="slide section level2">
+<h1>Software on a Cluster</h1>
+<p>Reproducibility is paramount</p>
+<p>We will almost never remove an old version of software</p>
+<p>Use the <code>module load</code> command to select the version you want</p>
+</div>
+<div id="exercise-2" class="slide section level2">
+<h1>Exercise</h1>
+<p>Try the following commands the terminal</p>
+<pre><code>module avail 
+module avail pytorch
+module load pytorch/1.6-cuda10
+python -c &quot;import torch ; print(torch.__version__)&quot;
+module unload pytorch
+python -c &quot;import torch ; print(torch.__version__)&quot;</code></pre>
+</div>
+<div id="software-on-a-cluster-pt-2" class="slide section level2">
+<h1>Software on a Cluster (pt 2)</h1>
+<p>The module command has overlap with</p>
+<ol style="list-style-type: decimal">
+<li>conda</li>
+<li>python virtual envs</li>
+<li>Using containers</li>
+</ol>
+<p>Sometimes its more convenient to use a different version mechanism</p>
+<p>Sometimes you need to compose a workflow from multiple pieces of software</p>
+<p>Sometimes you want a single environment with every version fixed.</p>
+<p>We don’t always get it right so … help@massive.org.au</p>
+</div>
+<div id="exercise-3" class="slide section level2">
+<h1>Exercise</h1>
+<ul>
+<li>Switch tabs back to the training@cvl<span class="citation">@uwa</span> tab</li>
+<li>Acknowledge the dialog</li>
+<li>Click Jupyter Lab</li>
+<li>Click Launch</li>
+<li>When its avilable Click Connect</li>
+<li>Browse to and Open ResNet_Example.ipynb</li>
+<li>Select Run -&gt; “run all cells”</li>
+</ul>
+<p>Notice the time to run each epoch</p>
+<p>You’ll probably want to stop execution at this point</p>
+</div>
+<div id="an-aside" class="slide section level2">
+<h1>An aside</h1>
+<p>That dialog you dismissed is a limitation of the proxy service translating connections from a HTTPS connection into the cluster.</p>
+<p>If you use another method of connecting to a cluster (like ssh tunnels) you wouldn’t even see this.</p>
+</div>
+<div id="resources-on-the-cluster" class="slide section level2">
+<h1>Resources on the cluster</h1>
+<p>Your Jupyter is on 1 CPU and 4GB RAM</p>
+<p>Post-training use more resources (including GPU)</p>
+<p>We are teaching scripts etc not Jupyter</p>
+</div>
+<div id="converting-jupyter-notebooks-to-scripts" class="slide section level2">
+<h1>Converting Jupyter Notebooks to Scripts</h1>
+<p>Jupyter Notebooks (ipynb files) include plots and graphs</p>
+<p>Scripts can’t plot (can save though)</p>
+<p>Jupyter can convert ipynb to script but you must remove bits like plots</p>
+</div>
+<div id="exercise-4" class="slide section level2">
+<h1>Exercise</h1>
+<p>Go back to the notebook</p>
+<p>Next comment out ploting cell</p>
+<p>open a new Jupyter terminal (file-&gt;new-&gt;terminal) and run</p>
+<ul>
+<li>Don’t use the exiting terminal!!!</li>
+</ul>
+<pre><code>jupyter nbconvert --to script ResNet_Example.ipynb
+export EPOCHS=1 ; python3 ResNet_Example.py</code></pre>
+</div>
+<div id="another-aside" class="slide section level2">
+<h1>Another aside</h1>
+<p>The jupyter terminal is slightly different than the terminal you started from the main screen</p>
+<ul>
+<li>The jupyter terminal is inside a container environment. The jupyter command is present</li>
+<li>The terminal on the mainscreen is outside the container environment. The sbatch command is present</li>
+</ul>
+<p>In general jupyter doesn’t have to be installed in a container. If its not, then the two terminals will be equivalent (except for what modules might be loaded)</p>
+</div>
+<div id="interactive-vs-non-interactive" class="slide section level2">
+<h1>Interactive Vs Non-Interactive</h1>
+<p>Everything so far has been Interactive:</p>
+<p>You requested Jupyter</p>
+<p>You waited for it to be available and connected</p>
+<p>You stared running cells/scripts</p>
+<p>What happens when you want BIG resources? You wait in a queue</p>
+</div>
+<div id="exercise-5" class="slide section level2">
+<h1>Exercise</h1>
+<p>Using the terminal (not the jupyter terminal)</p>
+<pre><code>cat resnet_gpu.cvluwa.slurm
+sbatch resnet_gpu.cvluwa.slurm
+squeue</code></pre>
+<p>notice the job number try</p>
+<pre><code>sacct -j &lt;jobnumber&gt;
+cat slurm-&lt;jobnumber&gt;.out</code></pre>
+<p>Check the time per epoch. Was it faster than previously?</p>
+<p>Notice that resnet_gpu.cvluwa.slurm sets an environment variable for EPOCH</p>
+</div>
+<div id="checking-performance" class="slide section level2">
+<h1>Checking performance</h1>
+<p>Is this as fast as it gets?</p>
+<p>Whats the limiting factor?</p>
+<p>Compare CPU and GPU usage</p>
+</div>
+<div id="exercise-6" class="slide section level2">
+<h1>Exercise</h1>
+<ol style="list-style-type: decimal">
+<li>Use sacct –format=start,end,CPUTime -j <jobid></li>
+<li>resnet_gpu.cvluwa.slurm produced a csv file of GPU usage. Plot it</li>
+</ol>
+</div>
+<div id="performance" class="slide section level2">
+<h1>Performance</h1>
+<div class="figure">
+<img src="util.png" alt="GPU utilisation" />
+<p class="caption">GPU utilisation</p>
+</div>
+<ul>
+<li>The GPU utilisation never goes over 50%</li>
+<li>There are two clear phases
+<ul>
+<li>Freezing most layers and training the output</li>
+<li>Unfreezing all layers</li>
+</ul></li>
+<li>10 Epochs in each phase, you can see 10 dips in the second phase (your epochs=5)</li>
+<li>The CPU util is 6 times the total time.
+<ul>
+<li>There were 6 CPUs.</li>
+<li>AFAIK pytorch always uses 100% of all CPUs</li>
+</ul></li>
+</ul>
+</div>
+</body>
+</html>
