@@ -21,7 +21,7 @@ Most modern HPC are Clusters.
 * Group of computers
 * NOT one fast computer
 
-many tasks NOT one fast task
+Many tasks NOT one fast task
 
 Most AI tasks decompose
 BUT you have to do the work
@@ -32,7 +32,7 @@ BUT you have to do the work
 
 Usually:
 
-* Shared filesystem (you don't need to copy you files between nodes)
+* Shared file system (you don't need to copy you files between nodes)
 * Shared Money (pool resources to buy more nodes, but you have to share them)
 * Scheduler (takes care of making sure everyone gets a turn)
 
@@ -83,7 +83,7 @@ Open
 ## Requesting Resources
 
 * Slurm for scheduling
-* scripts have a series #SBATCH "comments" at the begining
+* scripts have a series #SBATCH "comments" at the beginning
 * The comments tell slurm what resources we want
 
 ## Exercise
@@ -91,6 +91,8 @@ Open
 Run the following commands in the terminal
 
 ```
+ls -l $pwd$
+cd $pwd$
 git clone $gitsource$
 cd $gitdir$
 cat $firstscript$
@@ -98,10 +100,10 @@ sbatch $firstscript$
 squeue -u $$USER
 sacct -j <jobid>
 sacct -l -j <jobid>
-sacct --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,CPUTime -j  <jobid>
+sacct --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,CPUTime -j  <jobid>
 ```
 
-The job should run extremly quickly
+The job should run extremely quickly
 
 The `sacct` commands really only make sense after the job is completed
 
@@ -114,7 +116,7 @@ The `sacct` commands really only make sense after the job is completed
 
 ```
 #SBATCH --job-name=pytorch 
-#SBATCH --account=vf68 
+#SBATCH --account=$training_project$
 #SBATCH --nodes=1 
 #SBATCH --ntasks=6 
 #SBATCH --cpus-per-task=1 
@@ -129,7 +131,7 @@ The `sacct` commands really only make sense after the job is completed
 
 ```
 #SBATCH --job-name=pytorch
-#SBATCH --account=vf68
+#SBATCH --account=$training_project$
 #SBATCH --nodes=1
 #SBATCH --ntasks=6
 #SBATCH --cpus-per-task=1
@@ -144,11 +146,32 @@ The `sacct` commands really only make sense after the job is completed
 
 Different clusters specify their resources in slightly different ways.
 
-M3 has multiple varietys of GPU and you need to request exactly what you want
+M3 has multiple varieties of GPU and you need to request exactly what you want
 
 CVL@UWA is used primarily for Remote Desktop (i.e. vis programs) so the GPUs are managed differently
 
 CVL@UWA has less RAM
+
+---
+
+## File systems
+
+Did you notice we did `cd $pwd$` in the exercise?
+Normally you have some or all of the following
+
+* The home directory
+  * available on all nodes
+  * Small quota
+  * backed up
+* A big file system 
+  * `/projects` and `/scratch`
+  * available on all nodes 
+  * larger quota
+  * MAY be backed up (check documentation)
+* A fast file system
+  * Node local
+  * copy data from big FS to fast FS
+  * data removed at the end of the job
 
 ---
 
@@ -201,11 +224,9 @@ We don't always get it right so ... help@massive.org.au
 * Acknowledge the dialog
 * Click Jupyter Lab
 * Click Launch
-* When its avilable Click Connect
+* When its available Click Connect
 * Browse to and Open $resnet_notebook$
 * Select Run -> "run all cells"
-
-Notice the time to run each epoch
 
 You'll probably want to stop execution at this point
 
@@ -241,7 +262,7 @@ Jupyter can convert ipynb to script but you must remove bits like plots
 
 Go back to the notebook
 
-Next comment out ploting cell 
+Next comment out plotting cell 
 
 open a new Jupyter terminal (file->new->terminal) and run 
 
@@ -256,12 +277,12 @@ export EPOCHS=1 ; python3 $resnet_py$
 
 ## Another aside
 
-The jupyter terminal is slightly different than the terminal you started from the main screen
+The Jupyter terminal is slightly different than the terminal you started from the main screen
 
-* The jupyter terminal is inside a container environment. The jupyter command is present 
-* The terminal on the mainscreen is outside the container environment. The sbatch command is present
+* The Jupyter terminal is inside a container environment. The `jupyter` command is present 
+* The terminal on the main screen is outside the container environment. The `sbatch` command is present
 
-In general jupyter doesn't have to be installed in a container. If its not, then the two terminals will be equivalent (except for what modules might be loaded)
+In general Jupyter doesn't have to be installed in a container. If its not, then the two terminals will be equivalent (except for what modules might be loaded)
 
 ---
 
@@ -281,7 +302,7 @@ What happens when you want BIG resources? You wait in a queue
 
 ## Exercise
 
-Using the terminal (not the jupyter terminal)
+Using the terminal (not the Jupyter terminal)
 ```
 cat $resnet_gpu_slurm$
 sbatch $resnet_gpu_slurm$
@@ -325,7 +346,7 @@ Compare CPU and GPU usage
   * Freezing most layers and training the output 
   * Unfreezing all layers
 * 10 Epochs in each phase, you can see  10 dips in the second phase (your epochs=5)
-* The CPU util is 6 times the total time. 
+* The CPU utilisation is 6 times the total time. 
   * There were 6 CPUs. 
   * AFAIK pytorch always uses 100% of all CPUs
 

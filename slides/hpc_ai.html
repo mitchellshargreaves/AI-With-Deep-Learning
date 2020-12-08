@@ -41,14 +41,14 @@ Chris Hines
 <li>Group of computers</li>
 <li>NOT one fast computer</li>
 </ul>
-<p>many tasks NOT one fast task</p>
+<p>Many tasks NOT one fast task</p>
 <p>Most AI tasks decompose BUT you have to do the work</p>
 </div>
 <div id="other-bits-about-a-cluster" class="slide section level2">
 <h1>Other bits about a Cluster</h1>
 <p>Usually:</p>
 <ul>
-<li>Shared filesystem (you don’t need to copy you files between nodes)</li>
+<li>Shared file system (you don’t need to copy you files between nodes)</li>
 <li>Shared Money (pool resources to buy more nodes, but you have to share them)</li>
 <li>Scheduler (takes care of making sure everyone gets a turn)</li>
 </ul>
@@ -90,22 +90,24 @@ Chris Hines
 <h1>Requesting Resources</h1>
 <ul>
 <li>Slurm for scheduling</li>
-<li>scripts have a series #SBATCH “comments” at the begining</li>
+<li>scripts have a series #SBATCH “comments” at the beginning</li>
 <li>The comments tell slurm what resources we want</li>
 </ul>
 </div>
 <div id="exercise-1" class="slide section level2">
 <h1>Exercise</h1>
 <p>Run the following commands in the terminal</p>
-<pre><code>git clone https://github.com/mitchellshargreaves/AI-With-Deep-Learning.git
+<pre><code>ls -l vf86_scratch
+cd vf86_scratch
+git clone https://github.com/mitchellshargreaves/AI-With-Deep-Learning.git
 cd AI-With-Deep-Learning
 cat myfirstjob.cvluwa.slurm
 sbatch myfirstjob.cvluwa.slurm
 squeue -u $USER
 sacct -j &lt;jobid&gt;
 sacct -l -j &lt;jobid&gt;
-sacct --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,CPUTime -j  &lt;jobid&gt;</code></pre>
-<p>The job should run extremly quickly</p>
+sacct --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,CPUTime -j  &lt;jobid&gt;</code></pre>
+<p>The job should run extremely quickly</p>
 <p>The <code>sacct</code> commands really only make sense after the job is completed</p>
 </div>
 <div class="slide section level2">
@@ -114,7 +116,7 @@ sacct --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,
 <div class="left" style="float:left;width:48%">
 <h3 id="resources-on-m3">Resources on M3</h3>
 <pre><code>#SBATCH --job-name=pytorch 
-#SBATCH --account=vf68 
+#SBATCH --account=vf86
 #SBATCH --nodes=1 
 #SBATCH --ntasks=6 
 #SBATCH --cpus-per-task=1 
@@ -126,7 +128,7 @@ sacct --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,
 <div class="right" style="float:right;width:48%">
 <h3 id="resources-on-cvluwa">Resources on CVL@UWA</h3>
 <pre><code>#SBATCH --job-name=pytorch
-#SBATCH --account=vf68
+#SBATCH --account=vf86
 #SBATCH --nodes=1
 #SBATCH --ntasks=6
 #SBATCH --cpus-per-task=1
@@ -138,9 +140,34 @@ sacct --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,
 </div>
 </div>
 <p>Different clusters specify their resources in slightly different ways.</p>
-<p>M3 has multiple varietys of GPU and you need to request exactly what you want</p>
+<p>M3 has multiple varieties of GPU and you need to request exactly what you want</p>
 <p>CVL@UWA is used primarily for Remote Desktop (i.e. vis programs) so the GPUs are managed differently</p>
 <p>CVL@UWA has less RAM</p>
+</div>
+<div id="file-systems" class="slide section level2">
+<h1>File systems</h1>
+<p>Did you notice we did <code>cd vf86_scratch</code> in the exercise? Normally you have some or all of the following</p>
+<ul>
+<li>The home directory
+<ul>
+<li>available on all nodes</li>
+<li>Small quota</li>
+<li>backed up</li>
+</ul></li>
+<li>A big file system
+<ul>
+<li><code>/projects</code> and <code>/scratch</code></li>
+<li>available on all nodes</li>
+<li>larger quota</li>
+<li>MAY be backed up (check documentation)</li>
+</ul></li>
+<li>A fast file system
+<ul>
+<li>Node local</li>
+<li>copy data from big FS to fast FS</li>
+<li>data removed at the end of the job</li>
+</ul></li>
+</ul>
 </div>
 <div id="software-on-a-cluster" class="slide section level2">
 <h1>Software on a Cluster</h1>
@@ -178,11 +205,10 @@ python -c &quot;import torch ; print(torch.__version__)&quot;</code></pre>
 <li>Acknowledge the dialog</li>
 <li>Click Jupyter Lab</li>
 <li>Click Launch</li>
-<li>When its avilable Click Connect</li>
+<li>When its available Click Connect</li>
 <li>Browse to and Open ResNet_Example.ipynb</li>
 <li>Select Run -&gt; “run all cells”</li>
 </ul>
-<p>Notice the time to run each epoch</p>
 <p>You’ll probably want to stop execution at this point</p>
 </div>
 <div id="an-aside" class="slide section level2">
@@ -205,7 +231,7 @@ python -c &quot;import torch ; print(torch.__version__)&quot;</code></pre>
 <div id="exercise-4" class="slide section level2">
 <h1>Exercise</h1>
 <p>Go back to the notebook</p>
-<p>Next comment out ploting cell</p>
+<p>Next comment out plotting cell</p>
 <p>open a new Jupyter terminal (file-&gt;new-&gt;terminal) and run</p>
 <ul>
 <li>Don’t use the exiting terminal!!!</li>
@@ -215,12 +241,12 @@ export EPOCHS=1 ; python3 ResNet_Example.py</code></pre>
 </div>
 <div id="another-aside" class="slide section level2">
 <h1>Another aside</h1>
-<p>The jupyter terminal is slightly different than the terminal you started from the main screen</p>
+<p>The Jupyter terminal is slightly different than the terminal you started from the main screen</p>
 <ul>
-<li>The jupyter terminal is inside a container environment. The jupyter command is present</li>
-<li>The terminal on the mainscreen is outside the container environment. The sbatch command is present</li>
+<li>The Jupyter terminal is inside a container environment. The <code>jupyter</code> command is present</li>
+<li>The terminal on the main screen is outside the container environment. The <code>sbatch</code> command is present</li>
 </ul>
-<p>In general jupyter doesn’t have to be installed in a container. If its not, then the two terminals will be equivalent (except for what modules might be loaded)</p>
+<p>In general Jupyter doesn’t have to be installed in a container. If its not, then the two terminals will be equivalent (except for what modules might be loaded)</p>
 </div>
 <div id="interactive-vs-non-interactive" class="slide section level2">
 <h1>Interactive Vs Non-Interactive</h1>
@@ -232,7 +258,7 @@ export EPOCHS=1 ; python3 ResNet_Example.py</code></pre>
 </div>
 <div id="exercise-5" class="slide section level2">
 <h1>Exercise</h1>
-<p>Using the terminal (not the jupyter terminal)</p>
+<p>Using the terminal (not the Jupyter terminal)</p>
 <pre><code>cat resnet_gpu.cvluwa.slurm
 sbatch resnet_gpu.cvluwa.slurm
 squeue</code></pre>
@@ -269,7 +295,7 @@ cat slurm-&lt;jobnumber&gt;.out</code></pre>
 <li>Unfreezing all layers</li>
 </ul></li>
 <li>10 Epochs in each phase, you can see 10 dips in the second phase (your epochs=5)</li>
-<li>The CPU util is 6 times the total time.
+<li>The CPU utilisation is 6 times the total time.
 <ul>
 <li>There were 6 CPUs.</li>
 <li>AFAIK pytorch always uses 100% of all CPUs</li>

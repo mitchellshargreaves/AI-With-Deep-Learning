@@ -6,3 +6,5 @@ resnet_gpu_slurm: resnet_gpu.cvluwa.slurm
 firstscript: myfirstjob.cvluwa.slurm
 resnet_notebook: ResNet_Example.ipynb
 resnet_py: ResNet_Example.py
+pwd: vf86_scratch
+training_project: vf86
