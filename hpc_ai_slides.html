@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="author: Chris Hines" />
+  <title>title: HPC for AI/ML</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="https://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <script src="https://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">title: HPC for AI/ML</h1>
+  <p class="author">
+author: Chris Hines
+  </p>
+  <p class="date">date: 20201207</p>
+</div>
+<div class="slide section level1">
+
+<h2 id="hello">Hello</h2>
+<p>This is an ML specific digest of</p>
+<p>https://docs.massive.org.au</p>
+<p>help@massive.org.au</p>
+</div>
+<div class="slide section level1">
+
+<h2 id="whats-a-clusterhpc">Whats a Cluster/HPC?</h2>
+<p>Most modern HPC are Clusters.</p>
+<ul>
+<li>Group of computers</li>
+<li>NOT one fast computer</li>
+</ul>
+<p>many tasks NOT one fast task</p>
+<p>Most AI tasks decompose BUT you have to do the work</p>
+</div>
+<div class="slide section level1">
+
+<h2 id="other-bits-about-a-cluster">Other bits about a Cluster</h2>
+<p>Usually:</p>
+<ul>
+<li>Shared filesystem (you don’t need to copy you files between nodes)</li>
+<li>Shared Money (pool resources to buy more nodes, but you have to share them)</li>
+<li>Scheduler (takes care of making sure everyone gets a turn)</li>
+</ul>
+<h2 id="schedulers-bane-or-salvation">Schedulers: Bane or Salvation?</h2>
+<p>Ask for what you want.</p>
+<p>You will get it WHEN its available.</p>
+<p>Pro: Don’t run out of RAM due to another user</p>
+<p>Con: If you over your job will die</p>
+<p>Pro: Exclusive CPU, code should take the same time</p>
+<p>Con: If you run over your job will die</p>
+<p>Pro: If you’re not using it, someone else is</p>
+<ul>
+<li>better economics</li>
+<li>bigger cluster</li>
+<li>faster research</li>
+</ul>
+</div>
+<div class="slide section level1">
+
+<h2 id="accessing-the-cluster">Accessing the cluster</h2>
+<ul>
+<li>Terminal/Command line</li>
+<li>VNC Server (aka Desktop)</li>
+<li>Jupyter Lab</li>
+</ul>
+</div>
+<div class="slide section level1">
+
+<h2 id="exercise">Exercise</h2>
+<p>Open <a href="https://training.cloud.cvl.org.au">https://training.cloud.cvl.org.au</a></p>
+<ul>
+<li>Select training@cvl<span class="citation">@uwa</span></li>
+<li>Login with AAF (or Google if we had to register you using gmail)</li>
+<li>Select Terminal</li>
+<li>Click Run on Login Node</li>
+</ul>
+</div>
+<div id="requesting-resources" class="slide section level1">
+<h1>Requesting Resources</h1>
+<ul>
+<li>Slurm for scheduling</li>
+<li>scripts have a series #SBATCH “comments” at the begining</li>
+<li>The comments tell slurm what resources we want</li>
+</ul>
+</div>
+<div id="exercise-1" class="slide section level1">
+<h1>Exercise</h1>
+<p>Run the following commands in the terminal</p>
+<pre><code>git clone https://github.com/mitchellshargreaves/AI-With-Deep-Learning.git
+cd 
+cat 
+sbatch 
+squeue -u $USER
+sacct -j &lt;jobid&gt;
+sacct -l -j &lt;jobid&gt;
+sacct --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,CPUTime -j  &lt;jobid&gt;</code></pre>
+<p>The job will should run extremly</p>
+<p>The <code>sacct</code> commands really only make sense after the job is completed</p>
+</div>
+<div id="software-on-a-cluster" class="slide section level1">
+<h1>Software on a Cluster</h1>
+<p>Reproducibility is paramount</p>
+<p>We will almost never remove an old version of software</p>
+<p>Use the <code>module load</code> command to select the version you want</p>
+<h2 id="exercise-2">Exercise</h2>
+<p>Try the following commands the terminal</p>
+<pre><code>module load pytorch
+python -c &quot;import torch ; print(torch.__version__)&quot;
+module avail pytorch
+module unload pytorch
+module load pytorch/1.6-cuda10
+python -c &quot;import torch ; print(torch.__version__)&quot;
+module avail</code></pre>
+<h2 id="software-on-a-cluster-pt-2">Software on a Cluster (pt 2)</h2>
+<p>The module command has overlap with</p>
+<ol style="list-style-type: decimal">
+<li>conda</li>
+<li>python virtual envs</li>
+<li>Using containers</li>
+</ol>
+<p>Sometimes its more convenient to use a different version mechanism</p>
+<p>Sometimes you need to compose a workflow from multiple pieces of software</p>
+<p>Sometimes you want a single environment with every version fixed.</p>
+<p>We don’t always get it right so … help@massive.org.au</p>
+<h2 id="exercise-3">Exercise</h2>
+<ul>
+<li>Switch tabs back to the training@cvl<span class="citation">@uwa</span> tab</li>
+<li>Acknowledge the dialog</li>
+<li>Click Jupyter Lab</li>
+<li>Click Launch</li>
+<li>When its avilable Click Connect</li>
+<li>Browse to and Open</li>
+<li>Select Run -&gt; “run all cells”</li>
+</ul>
+<p>Notice the time to run each epoch</p>
+<h2 id="an-aside">An aside</h2>
+<p>That dialog you dismissed is a limitation of the proxy service translating connections from a HTTPS connection into the cluster.</p>
+<p>If you use another method of connecting to a cluster (like ssh tunnels) you wouldn’t even see this.</p>
+<h2 id="converting-jupyter-notebooks-to-scripts">Converting Jupyter Notebooks to Scripts</h2>
+<p>Jupyter Notebooks (ipynb files) include plots and graphs</p>
+<p>Scripts plot (can save though)</p>
+<p>Jupyter can convert ipynb to script but you must remove bits like plots</p>
+<h2 id="exercise-4">Exercise</h2>
+<p>Go back to the notebook</p>
+<p>Next comment out ploting cell</p>
+<p>open a new Jupyter terminal (file-&gt;new-&gt;terminal) and run</p>
+<ul>
+<li>Don’t use the exiting terminal!!!</li>
+</ul>
+<pre><code>jupyter nbconvert --to script 
+python3 resnet.py</code></pre>
+<h2 id="another-aside">Another aside</h2>
+<p>The jupyter terminal is slightly different than the terminal you started from the main screen</p>
+<ul>
+<li>The jupyter terminal is inside a container environment. The jupyter command is present</li>
+<li>The terminal on the mainscreen is outside the container environment. The sbatch command is present</li>
+</ul>
+<p>In general jupyter doesn’t have to be installed in a container. If its not, then the two terminals will be equilivent (except for what modules migth be loaded)</p>
+<h2 id="interactive-vs-non-interactive">Interactive Vs Non-Interactive</h2>
+<p>Everything so far has been Interactive:</p>
+<p>You requested Jupyter</p>
+<p>You waited for it to be available and connected</p>
+<p>You stared running cells/scripts</p>
+<p>What happens when you want BIG resources? You wait in a queue</p>
+<h2 id="exercise-5">Exercise</h2>
+<p>Using the terminal (not the jupyter terminal)</p>
+<pre><code>cat resnet_gpu.cvluwa.slurm
+sbatch 
+squeue</code></pre>
+<p>notice the job number try</p>
+<pre><code>sacct -j &lt;jobnumber&gt;
+cat slurm-&lt;jobnumber&gt;.out</code></pre>
+<p>Check the time per epoch. Was it faster than previously?</p>
+<h2 id="checking-performance">Checking performance</h2>
+<p>Is this as fast as it gets?</p>
+<p>Whats the limiting factor?</p>
+<p>Compare CPU and GPU usage</p>
+<h2 id="exercise-6">Exercise</h2>
+<ol style="list-style-type: decimal">
+<li>submit</li>
+<li>notice the JobID</li>
+<li>Use sacct –format=start,end,CPUTime -j <jobid></li>
+<li>repeat for resnet_gpu.cvluwa.slurm</li>
+<li>resnet_gpu.cvluwa.slurm produced a csv file of GPU usage. Plot it</li>
+</ol>
+<h2 id="performance">Performance</h2>
+</div>
+</body>
+</html>
