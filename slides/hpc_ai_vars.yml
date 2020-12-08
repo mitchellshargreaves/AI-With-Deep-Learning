@@ -1,0 +1,8 @@
+---
+gitsource: https://github.com/mitchellshargreaves/AI-With-Deep-Learning.git 
+gitdir: AI-With-Deep-Learning
+site: training@cvl@uwa
+resnet_gpu_slurm: resnet_gpu.cvluwa.slurm
+firstscript: myfirstjob.cvluwa.slurm
+resnet_notebook: ResNet_Example.ipynb
+resnet_py: ResNet_Example.py
