@@ -1,11 +1,14 @@
 #!/bin/bash
 #SBATCH --job-name=pytorch
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=3.5G
-#SBATCH --partition=desktop
 #SBATCH --account=vf68
+#SBATCH --nodes=1
+#SBATCH --ntasks=6
+#SBATCH --cpus-per-task=1
+#SBATCH --gres=gpu:P4:1
+#SBATCH --partition=desktop
+#SBATCH --mem=55G
+#SBATCH --qos=desktopq
+#SBATCH --reservation=training-ml-20201209
 container=/usr/local/sv2/juflocu.sif
 script="ResNet_Example.py"
 cmd="$PWD/$script"
